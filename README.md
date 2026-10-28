@@ -1,7 +1,19 @@
 # @yedoma-labs/ilyn-pages
 
-Async iteration over every page of a paginated HTTP API, with guards against the usual failure modes:
-endless cursor loops, skipped or duplicated rows, rate limits in the middle of a run and hanging requests.
+<picture>
+  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/yedoma-labs/assets/main/resized/banner-resized-mobile.png">
+  <img src="https://raw.githubusercontent.com/yedoma-labs/assets/main/resized/banner-resized.png" alt="Project Header">
+</picture>
+
+[![CI](https://github.com/yedoma-labs/ilyn-pages/actions/workflows/ci.yml/badge.svg)](https://github.com/yedoma-labs/ilyn-pages/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@yedoma-labs/ilyn-pages.svg)](https://www.npmjs.com/package/@yedoma-labs/ilyn-pages)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **ilyn** (*ilyn*) — Yakutian (Sakha) for "(noch zu bestätigen)"
+
+Zero-dependency async iteration over every page of a paginated HTTP API, with guards against endless
+cursor loops, skipped or duplicated rows, rate limits in the middle of a run and hanging requests.
 
 Zero runtime dependencies. Uses only `fetch`, `URL`, `AbortController` and `Headers`, so it runs on
 Node.js 20+, Bun and Deno.
@@ -22,13 +34,13 @@ Fetching "all pages" of an API looks trivial and fails in production:
 
 `ilyn-pages` is the generic layer for the rest.
 
-## Install
+## Installation
 
 ```sh
 pnpm add @yedoma-labs/ilyn-pages
 ```
 
-## Quickstart
+## Quick start
 
 ### Next link in the `Link` header
 
@@ -130,8 +142,12 @@ Items that were yielded before an error are not rolled back. Keep what you need 
 | Foreign next URL | Next URL has another origin than the start URL | `INVALID_LINK` (unless `allowCrossOriginNext: true`) |
 | Broken `Link` header | Malformed link that mentions `rel="next"` and no valid next link | `INVALID_LINK` |
 
-Every error is a `PaginationError` with a `code` and a `page` number (the page whose request or
+Guard errors are `PaginationError` instances with a `code` and a `page` number (the page whose request or
 response caused the error). Error messages never contain query values or cursors.
+
+Other errors pass through unchanged: a non-2xx status from `createFetchPager` is a plain `Error`
+(`Request failed with HTTP 500`), a body that is not JSON is a plain `Error` that names the status,
+and errors from the injected `fetch` are rethrown as they are.
 
 ## API
 
