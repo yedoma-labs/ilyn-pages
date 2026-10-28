@@ -1,6 +1,6 @@
 {
 	"name": "@yedoma-labs/ilyn-pages",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Zero-dependency async iteration over cursor and Link-header paginated APIs with loop, page, rate-limit and timeout guards",
 	"type": "module",
 	"main": "./dist/index.cjs",
