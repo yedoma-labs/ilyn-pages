@@ -148,6 +148,21 @@ describe("createFetchPager with Link headers", () => {
 		expect((error as Error).message).toBe("Request failed with HTTP 500");
 	});
 
+	it("names the response for a non-JSON body without echoing the body", async () => {
+		const f = fakeFetch(
+			() =>
+				new Response("<html>session-token-123</html>", {
+					status: 200,
+					headers: { "content-type": "text/html" },
+				}),
+		);
+		const pager = createFetchPager({ url: START, fetch: f.fetch, extract: extractItems });
+		const error = await errorFrom(collect(paginate({ fetchPage: pager })));
+		expect(error).toBeInstanceOf(Error);
+		expect((error as Error).message).toBe("Response of HTTP 200 is not valid JSON");
+		expect((error as Error).message).not.toContain("session-token-123");
+	});
+
 	it("passes an error from the injected fetch through unchanged", async () => {
 		const boom = new Error("socket hang up");
 		const pager = createFetchPager({

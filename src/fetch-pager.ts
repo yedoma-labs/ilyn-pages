@@ -137,7 +137,16 @@ export function createFetchPager<T>(options: FetchPagerOptions<T>): FetchPage<T>
 				throw new Error(`Request failed with HTTP ${res.status}`);
 			}
 
-			const body: unknown = await res.json();
+			let body: unknown;
+			try {
+				body = await res.json();
+			} catch (error) {
+				if (error instanceof SyntaxError) {
+					// Name the response without echoing its body, which may contain secrets.
+					throw new Error(`Response of HTTP ${res.status} is not valid JSON`, { cause: error });
+				}
+				throw error;
+			}
 			const items = extract(body);
 			if (!Array.isArray(items)) {
 				throw new TypeError("extract() must return an array of items");
