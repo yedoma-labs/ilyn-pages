@@ -10,8 +10,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **илин** (*ilyn*) — Yakutian (Sakha) for "east; front; future"
-
 Zero-dependency async iteration over every page of a paginated HTTP API, with guards against endless
 cursor loops, skipped or duplicated rows, rate limits in the middle of a run and hanging requests.
 
