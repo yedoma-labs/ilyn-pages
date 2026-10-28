@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/yedoma-labs/ilyn-pages/compare/v1.0.1...v1.0.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* reject a next link that points back to the start url ([89c1cf9](https://github.com/yedoma-labs/ilyn-pages/commit/89c1cf906257d3b0217a2eec1083d25d763f02c5))
+
 ## [1.0.1](https://github.com/yedoma-labs/ilyn-pages/compare/v1.0.0...v1.0.1) (2026-10-28)
 
 
