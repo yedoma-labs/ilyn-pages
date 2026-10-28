@@ -176,6 +176,26 @@ describe("createFetchPager with Link headers", () => {
 	});
 });
 
+describe("createFetchPager start URL loops", () => {
+	it("throws CURSOR_LOOP when the next link points back to the start URL", async () => {
+		const f = fakeFetch(() => json({ items: [1, 2] }, { link: `<${START}>; rel="next"` }));
+		const pager = createFetchPager({ url: START, fetch: f.fetch, extract: extractItems });
+		const seen: number[] = [];
+		const error = await errorFrom(
+			(async () => {
+				for await (const item of paginate({ fetchPage: pager })) {
+					seen.push(item);
+				}
+			})(),
+		);
+		expect(error).toBeInstanceOf(PaginationError);
+		expect((error as PaginationError).code).toBe("CURSOR_LOOP");
+		expect((error as PaginationError).page).toBe(1);
+		expect(f.calls).toEqual([START]);
+		expect(seen).toEqual([]);
+	});
+});
+
 describe("createFetchPager rate limiting", () => {
 	it("waits for Retry-After in seconds and then retries the same page", async () => {
 		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });

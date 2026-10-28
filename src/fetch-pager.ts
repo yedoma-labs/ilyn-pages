@@ -74,6 +74,7 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
  * - Next URLs come from the `Link` header (RFC 8288) or from `nextFromResponse`.
  * - Next URLs on a different origin than `url` are rejected with `INVALID_LINK`, unless
  *   `allowCrossOriginNext` is set.
+ * - A next URL that equals the start URL throws `CURSOR_LOOP` before page 1 is fetched again.
  * - HTTP 429 waits for `Retry-After` (seconds or HTTP date, capped at 60 s) and retries the same
  *   page up to 3 times, then throws `RATE_LIMITED`. The wait counts towards the page timeout.
  * - Other non-2xx responses throw a plain `Error` that contains only the status code.
@@ -107,6 +108,15 @@ export function createFetchPager<T>(options: FetchPagerOptions<T>): FetchPage<T>
 				0,
 				`Next link points to another origin (${next.origin}) and was not followed. ` +
 					`Set allowCrossOriginNext to allow it. Link: ${maskUrl(next.href)}`,
+			);
+		}
+		if (next.href === startUrl.href) {
+			// paginate() only knows cursors from page 2 on, so a link back to the start URL would
+			// re-fetch page 1 and yield its rows twice before the loop is noticed.
+			throw new PaginationError(
+				"CURSOR_LOOP",
+				0,
+				"Server linked back to the start URL; stopping to avoid duplicated rows",
 			);
 		}
 		return next.href;

@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **ilyn** (*ilyn*) — Yakutian (Sakha) for "(noch zu bestätigen)"
+> **илин** (*ilyn*) — Yakutian (Sakha) for "east; front; future"
 
 Zero-dependency async iteration over every page of a paginated HTTP API, with guards against endless
 cursor loops, skipped or duplicated rows, rate limits in the middle of a run and hanging requests.
@@ -139,6 +139,7 @@ Items that were yielded before an error are not rolled back. Keep what you need 
 | Abort | `signal` is aborted | `ABORTED` |
 | Early exit | `break` in `for await`, or `return()` | Open request signal is aborted |
 | Rate limit | HTTP 429 | Waits for `Retry-After` (seconds or HTTP date, capped at 60 s), retries the page up to 3 times, then `RATE_LIMITED` |
+| Link back to start | Next URL equals the start URL | `CURSOR_LOOP` |
 | Foreign next URL | Next URL has another origin than the start URL | `INVALID_LINK` (unless `allowCrossOriginNext: true`) |
 | Broken `Link` header | Malformed link that mentions `rel="next"` and no valid next link | `INVALID_LINK` |
 
